@@ -19,7 +19,7 @@ options = {
     isReplayEnabled: true,
     isPlayingBgm: true,
     seed: 3,
-    isDrawingScoreFront: true
+    isDrawingScoreFront: true,
 };
 
 /**
@@ -95,7 +95,6 @@ let aimPoint;
 let aimVector;
 let isAiming;
 let chargingShot = false;
-
 
 function update() {
 
