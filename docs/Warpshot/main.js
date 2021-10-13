@@ -19,7 +19,6 @@ options = {
     isReplayEnabled: true,
     isPlayingBgm: true,
     seed: 3,
-    isDrawingScoreFront: true,
 };
 
 /**
@@ -75,9 +74,9 @@ let enemyList = [];
 
 let enemySize = 40;
 let enemySpeedIncrease = 0.1;
-let enemySplitNum = 2;
-let enemySpeed = 1;
-let enemyStartNum = 10;
+let enemySpeed = 0.7;
+let enemyStartNum = 4;
+let enemySpawnNum = 1;
 
 let bulletSpeed = 0.08;
 let bulletSize = 5;
@@ -96,6 +95,8 @@ let aimVector;
 let isAiming;
 let chargingShot = false;
 
+let currDifficult = 0;
+
 function update() {
 
     if (!ticks) {
@@ -108,20 +109,12 @@ function update() {
     
     RenderInteractions();
 
-    if(player.currBoost > 0)
-    {
-        player.boostVec = vec(player.boostVec.x * boostDecay,
-            player.boostVec.y * boostDecay);
-        player.currBoost--;
-    }
-    else
-    {
-        player.isBoost = false;
-    }
+    DifficultScaling();
 }
 
 function Start()
 {
+    ClearAll();
     player = {
         pos: vec(G.WIDTH * 0.5, G.HEIGHT * 0.5),
         boostVec: vec(0, 0),
@@ -179,6 +172,17 @@ function RenderPlayer()
         let finalBoostVec = vec(player.boostVec.x * boostSpeed,
             player.boostVec.y * boostSpeed);
         player.pos.add(finalBoostVec);
+    }
+
+    if(player.currBoost > 0)
+    {
+        player.boostVec = vec(player.boostVec.x * boostDecay,
+            player.boostVec.y * boostDecay);
+        player.currBoost--;
+    }
+    else
+    {
+        player.isBoost = false;
     }
 
     player.pos.wrap(0, G.WIDTH, 0, G.HEIGHT);
@@ -299,7 +303,7 @@ function ShootInput()
         player.isBoost = false;
         player.currBoost = 0;
     }
-    if(input.isJustReleased)
+    if(input.isJustReleased && isAiming)
     {
         isAiming = false;
         Shoot();
@@ -354,9 +358,27 @@ function RandSpawnEnemy(speed)
     })
 }
 
+function DifficultScaling()
+{
+    if(difficulty > currDifficult)
+    {
+        times(enemySpawnNum, () => {
+            RandSpawnEnemy(enemySpeed);
+        })
+        currDifficult++;
+    }
+}
+
 function GameOver() {
     play("lucky");
 
+    ClearAll();
+
+    end();
+}
+
+function ClearAll()
+{
     remove(enemyList, () => {
         return true;
     })
@@ -364,6 +386,4 @@ function GameOver() {
     remove(bulletList, () => {
         return true;
     })
-
-    end();
 }
