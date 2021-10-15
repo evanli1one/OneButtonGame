@@ -262,7 +262,7 @@ function RenderInteractions()
         if(enemyHit)
         {
             play("coin");
-            addScore(1);
+            addScore(Math.round(enemy.speed * 5) - 3, enemy.pos.x, enemy.pos.y);
 
             color("red");
             particle(enemy.pos.x, enemy.pos.y, 100, 4, 0, 2 * PI);
