@@ -10,7 +10,7 @@ characters = [
 const G = {
     WIDTH: 400,
     HEIGHT: 400,
-    WARPEDGE: 2
+    WARPEDGE: 1
 };
 
 options = {
@@ -75,7 +75,7 @@ let enemyList = [];
 let enemySize = 40;
 let enemySpeedIncrease = 0.1;
 let enemySpeed = 0.7;
-let enemyStartNum = 4;
+let enemyStartNum = 2;
 let enemySpawnNum = 1;
 
 let bulletSpeed = 0.08;
@@ -189,8 +189,11 @@ function RenderPlayer()
 
     color("cyan");
     box(player.pos, 12);
+    let randX = rndi(-4, 4);
+    let randY = rndi(-4, 4);
     let particleAngle = atan2(player.currVelocity.y, player.currVelocity.x) + PI;
-    particle(player.pos.x, player.pos.y, 1, 2, particleAngle, PI/4);
+    particle(player.pos.x + randX, player.pos.y + randY,
+        1, 2, particleAngle, PI/4);
 }
 
 function RenderAimLine()
@@ -360,8 +363,10 @@ function RandSpawnEnemy(speed)
 
 function DifficultScaling()
 {
-    if(difficulty > currDifficult)
+    if(ticks % (60 * 15) == 0 && enemyList.length < 10)
     {
+        console.log("spawn");
+        play("jump");
         times(enemySpawnNum, () => {
             RandSpawnEnemy(enemySpeed);
         })
